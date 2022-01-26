@@ -20,6 +20,9 @@ scale-info = { version = "1.0.0", default-features = false, features = [
 ] }
 serde = { version = "1.0.101", optional = true, features = ["derive"] }
 
+[dependencies.pallet-template]
+path = "../pallets/template"
+default-features = false
 
 [dependencies.frame-executive]
 default-features = false

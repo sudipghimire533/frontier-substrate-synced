@@ -56,6 +56,9 @@ pub use sp_runtime::{Perbill, Permill};
 mod precompiles;
 use precompiles::FrontierPrecompiles;
 
+/// Import the template pallet.
+pub use pallet_template;
+
 /// Type of block number.
 pub type BlockNumber = u32;
 
@@ -281,6 +284,10 @@ impl pallet_sudo::Config for Runtime {
     type Call = Call;
 }
 
+/// Configure the pallet-template in pallets/template.
+impl pallet_template::Config for Runtime {
+    type Event = Event;
+}
 pub struct FindAuthorTruncated<F>(PhantomData<F>);
 impl<F: FindAuthor<u32>> FindAuthor<H160> for FindAuthorTruncated<F> {
     fn find_author<'a, I>(digests: I) -> Option<H160>
@@ -376,6 +383,7 @@ construct_runtime!(
         EVM: pallet_evm::{Pallet, Config, Call, Storage, Event<T>},
         DynamicFee: pallet_dynamic_fee::{Pallet, Call, Storage, Config, Inherent},
         BaseFee: pallet_base_fee::{Pallet, Call, Storage, Config<T>, Event},
+        TemplateModule: pallet_template::{Pallet, Call, Storage, Event<T>},
     }
 );
 
@@ -765,6 +773,7 @@ impl_runtime_apis! {
             let params = (&config, &whitelist);
 
             add_benchmark!(params, batches, pallet_evm, PalletEvmBench::<Runtime>);
+            add_benchmark!(params, batches, pallet_template, TemplateModule);
 
             if batches.is_empty() { return Err("Benchmark not found for this pallet.".into()) }
             Ok(batches)
